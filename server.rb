@@ -22,7 +22,17 @@ end
 get '/tutor' do
   content_type :json
   invalidate_sessions
-  available_tutors
+
+  tutors = available_tutors
+  return tutors.to_json unless params[:status]
+
+  tutors.reject { |tutor|
+    tutor[:status] != params[:status]
+  }.to_json
+end
+
+post '/tutor/:email/ping' do
+  update_status params[:email], params[:status]
 end
 
 post '/tutor/:email/notification' do
@@ -61,7 +71,7 @@ def allowed?(email, token)
 end
 
 def default_hash_for(email)
-  @@tutors[email] =  { :token => '', :questions => [], :expires => in_2_minutes } unless @@tutors.include? email
+  @@tutors[email] =  {:status => 'available', :token => '', :questions => [], :expires => in_2_minutes } unless @@tutors.include? email
 end
 
 def add_notification params
@@ -69,7 +79,9 @@ def add_notification params
 end
 
 def available_tutors
-  @@tutors.keys.to_json
+  @@tutors.map do |email, info|
+    {:email => email, :status => info[:status]}
+  end
 end
 
 def update_session email
@@ -84,4 +96,8 @@ def invalidate_sessions
   @@tutors = @@tutors.reject do |email, info|
     info[:expires] < Time.now
   end
+end
+
+def update_status email, status
+  @@tutors[email][:status] = status
 end
