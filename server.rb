@@ -11,8 +11,8 @@ get '/download/update.xml' do
   send_file File.join('public', 'update.xml')
 end
 
-get '/download/rayku.dmg' do
-  send_file File.join('public', 'notificationBot.dmg')
+get '/download/rayku.*' do
+  send_file File.join('public', "notificationBot.#{params[:splat][0]}")
 end
 
 post '/sign_in' do

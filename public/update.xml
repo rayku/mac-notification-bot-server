@@ -10,4 +10,15 @@
       ]]>
     </description>
   </dmg>
+
+  <exe>
+    <version>0.5</version>
+    <url>http://notification-bot.rayku.com/download/rayku.exe</url>
+    <description>
+      <![CDATA[
+      * Updates
+      ]]>
+    </description>
+  </exe>
+
 </update>
