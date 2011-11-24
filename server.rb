@@ -6,6 +6,15 @@ require './question'
 
 @@tutors = {}
 
+get '/download/update.xml' do
+  content_type :xml
+  send_file File.join('public', 'update.xml')
+end
+
+get '/download/rayku.dmg' do
+  send_file File.join('public', 'notificationBot.dmg')
+end
+
 post '/sign_in' do
   return token_for(params[:email]) if authenticate?(params)
   return 400
