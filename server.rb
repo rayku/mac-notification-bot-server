@@ -40,6 +40,12 @@ get '/tutor' do
   }.to_json
 end
 
+get '/status/:email' do
+  content_type :json
+  invalidate_sessions
+  get_status params[:email]
+end
+
 post '/tutor/:email/ping' do
   update_status params[:email], params[:status]
 end
@@ -57,8 +63,8 @@ private
 def authenticate?(params)
   email = params[:email]
   password = params[:password]
-  response = Net::HTTP.get_response URI "http://www.rayku.com/loginchecker.php?usr=#{email}&pwd=#{password}"
-  response.code ==  '200'
+  response = Net::HTTP.get_response URI "http://www.rayku.com/api.php/auth/checkLogin?email=#{email}&password=#{password}"
+  response.body == 'OK'
 end
 
 def token_for(email)
@@ -109,4 +115,9 @@ end
 
 def update_status email, status
   @@tutors[email][:status] = status
+end
+
+def get_status email
+  retur @@tutors[email][:status] if @@tutors.include? email
+  false
 end
