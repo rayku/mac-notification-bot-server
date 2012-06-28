@@ -63,7 +63,9 @@ private
 def authenticate?(params)
   email = params[:email]
   password = params[:password]
-  response = Net::HTTP.get_response URI "http://www.rayku.com/api.php/auth/checkLogin?email=#{email}&password=#{password}"
+
+  uri = URI("http://www.rayku.com/api.php/auth/checkLogin")
+  response = Net::HTTP.post_form(uri,'email' => email, 'password' => password)
   response.body == 'OK'
 end
 
